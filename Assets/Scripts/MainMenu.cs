@@ -4,24 +4,63 @@ using UnityEngine;
 using UnityEditor;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.UI;
+using System.Linq;
+using System.Text;
+using System;
 
 public class MainMenu : MonoBehaviour
 {
-    public string namePlayer;
     public TMP_InputField fieldName;
-    void Start()
-    {
-        
-    }
+    public Text recordTextList;
+    public Button startBttn;
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        recordTextList.text = " ";
+        var se = new TMP_InputField.SubmitEvent();
+        se.AddListener(SubmitName);
+        fieldName.onEndEdit = se;
+        UpdateRecordList();
+
+    }
+    private void SubmitName(string namePlayer)
+    {
+        if (!String.IsNullOrEmpty(namePlayer))
+        {
+            SaveRecords.instanceSaveRecord.namePlayer = namePlayer;
+            var scorePlayer = SaveRecords.instanceSaveRecord.scorePlayer;
+            if (!SaveRecords.instanceSaveRecord.recordList.ContainsKey(namePlayer))
+            {
+                SaveRecords.instanceSaveRecord.recordList.Add(namePlayer, scorePlayer);
+                UpdateRecordList();
+
+            }
+
+            if (SaveRecords.instanceSaveRecord.namePlayer != null)
+                startBttn.interactable = true;
+            else
+                startBttn.interactable = false;
+
+        }
+
+
+
+    }
+    private void UpdateRecordList()
+    {
+        var records = SaveRecords.instanceSaveRecord.recordList;
+        records = records.OrderByDescending(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
+        StringBuilder score = new StringBuilder();
+        foreach (var item in records)
+        {
+            score.Append(item.Key + " " + item.Value + "\n");
+        }
+        recordTextList.text = score.ToString();
     }
     public void StartBttn()
     {
-        namePlayer = fieldName.text;
+
         SceneManager.LoadScene(1);
     }
     public void ExitBttn()
