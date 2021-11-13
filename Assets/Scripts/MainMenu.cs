@@ -15,9 +15,12 @@ public class MainMenu : MonoBehaviour
     public Text recordTextList;
     public Button startBttn;
 
+    
     private void Start()
     {
-        recordTextList.text = " ";
+       
+
+
         var se = new TMP_InputField.SubmitEvent();
         se.AddListener(SubmitName);
         fieldName.onEndEdit = se;
@@ -44,11 +47,14 @@ public class MainMenu : MonoBehaviour
 
         }
 
-
+        
 
     }
     private void UpdateRecordList()
     {
+      
+       
+
         var records = SaveRecords.instanceSaveRecord.recordList;
         records = records.OrderByDescending(pair => pair.Value).ToDictionary(pair => pair.Key, pair => pair.Value);
         StringBuilder score = new StringBuilder();
@@ -57,6 +63,8 @@ public class MainMenu : MonoBehaviour
             score.Append(item.Key + " " + item.Value + "\n");
         }
         recordTextList.text = score.ToString();
+        SaveRecords.instanceSaveRecord.recordsText = score.ToString();
+       
     }
     public void StartBttn()
     {
@@ -65,10 +73,24 @@ public class MainMenu : MonoBehaviour
     }
     public void ExitBttn()
     {
+        SaveRecords.instanceSaveRecord.Save();
 #if UNITY_EDITOR
         EditorApplication.ExitPlaymode();
 #else
         Application.Quit();
 #endif
+    }
+    public void SaveClick()
+    {
+        SaveRecords.instanceSaveRecord.Save();
+    }
+    public void LoadClick()
+    {
+        SaveRecords.instanceSaveRecord.Load();
+        recordTextList.text = SaveRecords.instanceSaveRecord.recordsText;
+    }
+    public void RemoveFailClick()
+    {
+        SaveRecords.instanceSaveRecord.RemoveFail();
     }
 }

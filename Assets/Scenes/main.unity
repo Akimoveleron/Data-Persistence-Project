@@ -504,6 +504,7 @@ MonoBehaviour:
   ScoreText: {fileID: 188020406}
   BestScoreText: {fileID: 2078529056}
   GameOverText: {fileID: 474497238}
+  recordScore: 0
 --- !u!1 &455529321
 GameObject:
   m_ObjectHideFlags: 0
